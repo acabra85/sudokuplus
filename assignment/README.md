@@ -56,6 +56,9 @@ bool verify_downloaded_data(const char* data, long data_size, const char* expect
     return strncmp(hash, expected_sha256, SHA256_SIZE)==0;
 }
 ```
+#### Code Review Snippet #1:
+1. I would accept this code review if respective unit tests are provided, and a review from someone else within the team.
+---
 
 **Snippet #2**,
 
@@ -71,6 +74,11 @@ BigInteger convertLongToBigInteger(long x) {
         return n.subtract(BigInteger.valueOf(-x));
 }
 ```
+#### Code Review Snippet #2 [Reject]:
+1. The method name indicates the conversion of a log to BigInteger but the code is treating the conversion with special cases, I suggest to either rename the method to purposfuly reflect the intent or separate the logic into two cases.
+2. I would expect to get unit tests for this method.
+
+---
 
 **Snippet #3**,
 
@@ -87,3 +95,9 @@ boolean verify_key(char[] challenge) {
     return true;
 }
 ```
+#### Code Review Snippet #3 [Reject]:
+1. This method to validate keys is subject to timing attacks, as it is comparing key by key an attacker can guess the password if sufficient tries are given.
+2. I would like to have more context on the origin of the secret key 'key' and challenge, in the case of passwords they should never be stored in plain text.
+3. Also returning immediately when the length does not match is subject to timing attacks as the time taken for equal length key will render processing time before a response is given.
+**Result:** I would not accept the code as is 
+---
