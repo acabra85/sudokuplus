@@ -1,4 +1,3 @@
-#invalid: second row's size differs from first
 2,4,6,4
 2,3,1
 4,2,3,1
