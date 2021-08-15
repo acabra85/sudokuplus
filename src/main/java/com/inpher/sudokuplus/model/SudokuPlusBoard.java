@@ -1,12 +1,15 @@
 package com.inpher.sudokuplus.model;
 
-import com.inpher.sudokuplus.BoardUtils;
+import com.inpher.sudokuplus.parse.BoardParseResponse;
+import com.inpher.sudokuplus.parse.BoardParser;
+import com.inpher.sudokuplus.parse.ParseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SudokuPlusBoard {
 
@@ -32,16 +35,20 @@ public class SudokuPlusBoard {
         this.board = board;
     }
 
-    static SudokuPlusBoard fromInputStream(InputStream ints) throws NullPointerException {
-        int[][] board = BoardUtils.parseBoardFromStream(ints);
-        return new SudokuPlusBoard(board);
+    public static SudokuPlusBoard fromFile(String fileName) {
+        try {
+            BoardParseResponse response = BoardParser.parseBoardFromFile(fileName);
+            if (ParseResult.SUCCESS == response.result) {
+                return new SudokuPlusBoard(response.board);
+            }
+            logger.info(response.toString());
+        } catch (FileNotFoundException fne) { logger.error(fne.getMessage(), fne); }
+        return null;
     }
 
-    public static SudokuPlusBoard fromFile(String fileName) throws FileNotFoundException {
-        int[][] board = BoardUtils.parseBoardFromFile(fileName);
-        return new SudokuPlusBoard(board);
+    public boolean isValidSudokuPlus() {
+        return validRows() && validColumns() && validRegions();
     }
-
 
     private boolean validRegions() {
         logger.debug("Validating Regions ... ");
@@ -97,7 +104,7 @@ public class SudokuPlusBoard {
     private boolean validColumns() {
         logger.debug("Validating Columns ... ");
         for (int i = 0; i < width; i++) {
-            int[] col = buildCol(i);
+            int[] col = buildColumn(i);
             logger.debug(String.format("col: %d -> %s", i + 1, Arrays.toString(col)));
             if (invalidLine(col, width, "Column", i)) {
                 return false;
@@ -106,7 +113,7 @@ public class SudokuPlusBoard {
         return true;
     }
 
-    private int[] buildCol(int idx) {
+    private int[] buildColumn(int idx) {
         int[] col = new int[width];
         for (int i = 0; i < width; i++) {
             col[i] = board[i][idx];
@@ -125,9 +132,5 @@ public class SudokuPlusBoard {
             set.add(num);
         }
         return false;
-    }
-
-    public boolean isValidSudokuPlus() {
-        return validRows() && validColumns() && validRegions();
     }
 }
