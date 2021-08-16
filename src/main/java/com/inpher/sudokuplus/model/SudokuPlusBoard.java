@@ -23,7 +23,6 @@ public class SudokuPlusBoard {
 
     private final int[][] board;
     private final int regionSize;
-    private final int regionCount;
 
     protected SudokuPlusBoard(int[][] board) {
         this.width = board[0].length;
@@ -31,7 +30,6 @@ public class SudokuPlusBoard {
         this.sqrtH = (int) Math.sqrt(height);
         this.sqrtW = (int) Math.sqrt(width);
         this.regionSize = sqrtH * sqrtW;
-        this.regionCount = (width * height) / regionSize;
         this.board = board;
     }
 
@@ -54,7 +52,7 @@ public class SudokuPlusBoard {
         logger.debug("Validating Regions ... ");
         int x = 0;
         int y = 0;
-        for (int r = 0; r < regionCount; ++r) {
+        for (int r = 0; r < regionSize; ++r) {
             if (r > 0 && r % sqrtW == 0) {
                 x = 0;
                 y += sqrtH;
@@ -66,7 +64,6 @@ public class SudokuPlusBoard {
         }
         return true;
     }
-
 
     private boolean invalidRegion(int r, int x, int y) {
         Set<Integer> set = new HashSet<>();
