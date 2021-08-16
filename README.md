@@ -11,3 +11,7 @@ line on the file corresponds with the row of the board only numbers allowed, mus
 
 ## Output
 The output will log a message with the result
+
+## Note for Windows Users
+
+Instead of mvn use mvnw to call the command above
